@@ -1,8 +1,6 @@
 import React, { FC } from 'react';
-import Head from 'next/head';
 
-import markup from '../utils/markup';
-import formatIfArray from '../utils/formatIfArray';
+import JsonLd from './JsonLd';
 
 type ReviewRating = {
   bestRating?: string;
@@ -49,74 +47,61 @@ export interface ProductJsonLdProps {
   mpn?: string;
 }
 
-const buildBrand = (brand: string) => `
-  "brand": {
-      "@type": "Thing",
-      "name": "${brand}"
-    },
-`;
+const buildBrand = (name: string) => ({ '@type': 'Thing', name });
 
-const buildReviewRating = (rating: ReviewRating) =>
-  rating
-    ? `"reviewRating": {
-          "@type": "Rating",
-          ${rating.bestRating ? `"bestRating": "${rating.bestRating}",` : ''}
-          ${rating.worstRating ? `"worstRating": "${rating.worstRating}",` : ''}
-          "ratingValue": "${rating.ratingValue}"
-        },`
-    : '';
+const buildReviewRating = ({
+  bestRating,
+  worstRating,
+  ratingValue,
+}: ReviewRating) => ({
+  '@type': 'Rating',
+  bestRating,
+  worstRating,
+  ratingValue,
+});
 
-const buildReviews = (reviews: Review[]) => `
-"review": [
-  ${reviews.map(
-    review => `{
-      "@type": "Review",
-      ${
-        review.datePublished
-          ? `"datePublished": "${review.datePublished}",`
-          : ''
-      }
-      ${review.reviewBody ? `"reviewBody": "${review.reviewBody}",` : ''}
-      ${review.name ? `"name": "${review.name}",` : ''}
-      ${buildReviewRating(review.reviewRating)}
-      "author": "${review.author}"
-  }`,
-  )}],`;
+const buildReview = ({
+  datePublished,
+  name,
+  reviewRating,
+  reviewBody,
+  author,
+}: Review) => ({
+  '@type': 'Review',
+  datePublished,
+  reviewBody,
+  name,
+  reviewRating: reviewRating ? buildReviewRating(reviewRating) : undefined,
+  author,
+});
 
-const buildAggregateRating = (aggregateRating: AggregateRating) => `
-  "aggregateRating": {
-      "@type": "AggregateRating",
-      "ratingValue": "${aggregateRating.ratingValue}",
-      "reviewCount": "${aggregateRating.reviewCount}"
-    },
-`;
+const buildAggregateRating = ({
+  ratingValue,
+  reviewCount,
+}: AggregateRating) => ({
+  '@type': 'AggregateRating',
+  ratingValue,
+  reviewCount,
+});
 
 // TODO: Docs for offers itemCondition & availability
 // TODO: Seller type, make dynamic
-const buildOffers = (offers: Offers) => `
-  "offers": {
-    "@type": "Offer",
-    "priceCurrency": "${offers.priceCurrency}",
-    ${
-      offers.priceValidUntil
-        ? `"priceValidUntil": "${offers.priceValidUntil}",`
-        : ''
-    }
-    ${offers.itemCondition ? `"itemCondition": "${offers.itemCondition}",` : ''}
-    ${offers.availability ? `"availability": "${offers.availability}",` : ''}
-    ${
-      offers.seller
-        ? `
-      "seller": {
-      "@type": "Organization",
-      "name": "${offers.seller.name}"
-    },
-    `
-        : ''
-    }
-    "price": "${offers.price}"
-  },
-`;
+const buildOffers = ({
+  priceCurrency,
+  priceValidUntil,
+  itemCondition,
+  availability,
+  seller,
+  price,
+}: Offers) => ({
+  '@type': 'Offer',
+  priceCurrency,
+  priceValidUntil,
+  itemCondition,
+  availability,
+  seller: seller ? { '@type': 'Organization', name: seller.name } : undefined,
+  price,
+});
 
 const ProductJsonLd: FC<ProductJsonLdProps> = ({
   productName,
@@ -132,32 +117,25 @@ const ProductJsonLd: FC<ProductJsonLdProps> = ({
   aggregateRating,
   offers,
 }) => {
-  const jslonld = `{
-    "@context": "http://schema.org/",
-    "@type": "Product",
-    "image":${formatIfArray(images)},
-    ${description ? `"description": "${description}",` : ''}
-    ${mpn ? `"mpn": "${mpn}",` : ''}
-    ${sku ? `"sku": "${sku}",` : ''}
-    ${gtin8 ? `"gtin8": "${gtin8}",` : ''}
-    ${gtin13 ? `"gtin13": "${gtin13}",` : ''}
-    ${gtin14 ? `"gtin14": "${gtin14}",` : ''}
-    ${brand ? buildBrand(brand) : ''}
-    ${reviews.length ? buildReviews(reviews) : ''}
-    ${aggregateRating ? buildAggregateRating(aggregateRating) : ''}
-    ${offers ? buildOffers(offers) : ''}
-    "name": "${productName}"
-  }`;
-
-  return (
-    <Head>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={markup(jslonld)}
-        key="jsonld-product"
-      />
-    </Head>
-  );
+  const value = {
+    '@context': 'http://schema.org/',
+    '@type': 'Product',
+    image: images,
+    description,
+    mpn,
+    sku,
+    gtin8,
+    gtin13,
+    gtin14,
+    brand: brand ? buildBrand(brand) : undefined,
+    review: reviews.length ? reviews.map(buildReview) : undefined,
+    aggregateRating: aggregateRating
+      ? buildAggregateRating(aggregateRating)
+      : undefined,
+    offers: buildOffers(offers),
+    name: productName,
+  };
+  return <JsonLd keyProp="jsonld-product" value={value} />;
 };
 
 export default ProductJsonLd;

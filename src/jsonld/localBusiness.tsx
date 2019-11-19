@@ -1,8 +1,6 @@
 import React, { FC } from 'react';
-import Head from 'next/head';
 
-import markup from '../utils/markup';
-import formatIfArray from '../utils/formatIfArray';
+import JsonLd from './JsonLd';
 
 type Address = {
   streetAddress: string;
@@ -36,36 +34,32 @@ export interface LocalBusinessJsonLdProps {
   priceRange?: string;
 }
 
-const buildGeo = (geo: Geo) => `
-  "geo": {
-    "@type": "GeoCoordinates",
-    "latitude": "${geo.latitude}",
-    "longitude": "${geo.longitude}"
-  },
-`;
+const buildGeo = ({ latitude, longitude }: Geo) => ({
+  '@type': 'GeoCoordinates',
+  latitude,
+  longitude,
+});
 
-const buildAddress = (address: Address) => `
-  "address": {
-    "@type": "PostalAddress",
-    "streetAddress": "${address.streetAddress}",
-    "addressLocality": "${address.addressLocality}",
-    ${
-      address.addressRegion
-        ? `"addressRegion": "${address.addressRegion}",`
-        : ''
-    }
-    "postalCode": "${address.postalCode}",
-    "addressCountry": "${address.addressCountry}"
-  },
-`;
+const buildAddress = ({
+  streetAddress,
+  addressLocality,
+  addressRegion,
+  postalCode,
+  addressCountry,
+}: Address) => ({
+  '@type': 'PostalAddress',
+  streetAddress,
+  addressLocality,
+  addressRegion,
+  postalCode,
+  addressCountry,
+});
 
-const buildRating = (rating: Rating) => `
-  "aggregateRating": {
-    "@type": "AggregateRating",
-    "ratingValue": "${rating.ratingValue}",
-    "ratingCount": "${rating.ratingCount}"
-  },
-`;
+const buildRating = ({ ratingValue, ratingCount }: Rating) => ({
+  '@type': 'AggregateRating',
+  ratingValue,
+  ratingCount,
+});
 
 const LocalBusinessJsonLd: FC<LocalBusinessJsonLdProps> = ({
   type,
@@ -80,30 +74,23 @@ const LocalBusinessJsonLd: FC<LocalBusinessJsonLdProps> = ({
   rating,
   priceRange,
 }) => {
-  const jslonld = `{
-    "@context": "http://schema.org",
-    "@type": "${type}",
-    "@id": "${id}",
-    ${description ? `"description": "${description}",` : ''}
-    ${url ? `"url": "${url}",` : ''}
-    ${telephone ? `"telephone": "${telephone}",` : ''}
-    ${buildAddress(address)}
-    ${geo ? `${buildGeo(geo)}` : ''}
-    ${rating ? `${buildRating(rating)}` : ''}
-    ${priceRange ? `"priceRange": "${priceRange}",` : ''}
-    "image":${formatIfArray(images)},
-    "name": "${name}"
-  }`;
+  const value = {
+    '@context': 'http://schema.org',
+    '@type': type,
+    '@id': id,
+    description,
+    url,
+    telephone,
 
-  return (
-    <Head>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={markup(jslonld)}
-        key="jsonld-local-business"
-      />
-    </Head>
-  );
+    address: address ? buildAddress(address) : undefined,
+    geo: geo ? buildGeo(geo) : undefined,
+    aggregateRating: rating ? buildRating(rating) : undefined,
+    priceRange,
+    image: images,
+    name,
+  };
+
+  return <JsonLd keyProp="jsonld-local-business" value={value} />;
 };
 
 export default LocalBusinessJsonLd;

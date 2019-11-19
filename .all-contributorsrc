@@ -151,6 +151,15 @@
         "code",
         "test"
       ]
+    },
+    {
+      "login": "none23",
+      "name": "Nick Anisimov",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/14677379?v=4",
+      "profile": "https://github.com/none23",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7

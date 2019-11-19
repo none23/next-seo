@@ -1,7 +1,6 @@
 import React, { FC } from 'react';
-import Head from 'next/head';
 
-import markup from '../utils/markup';
+import JsonLd from './JsonLd';
 
 export interface CourseJsonLdProps {
   courseName: string;
@@ -16,31 +15,18 @@ const CourseJsonLd: FC<CourseJsonLdProps> = ({
   providerName,
   providerUrl,
 }) => {
-  const jslonld = `{
-    "@context": "http://schema.org",
-    "@type": "Course",
-    "name": "${courseName}",
-    "description": "${description}",
-    "provider": {
-      "@type": "Organization",
-      "name": "${providerName}"${
-    providerUrl
-      ? `,
-      "sameAs": "${providerUrl}"`
-      : ''
-  }
-    }
-  }`;
-
-  return (
-    <Head>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={markup(jslonld)}
-        key="jsonld-course"
-      />
-    </Head>
-  );
+  const value = {
+    '@context': 'http://schema.org',
+    '@type': 'Course',
+    name: courseName,
+    description,
+    provider: {
+      '@type': 'Organization',
+      name: providerName,
+      sameAs: providerUrl,
+    },
+  };
+  return <JsonLd keyProp="jsonld-course" value={value} />;
 };
 
 export default CourseJsonLd;

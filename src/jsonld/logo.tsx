@@ -1,7 +1,6 @@
 import React, { FC } from 'react';
-import Head from 'next/head';
 
-import markup from '../utils/markup';
+import JsonLd from './JsonLd';
 
 export interface LogoJsonLdProps {
   logo: string;
@@ -9,22 +8,14 @@ export interface LogoJsonLdProps {
 }
 
 const LogoJsonLd: FC<LogoJsonLdProps> = ({ url, logo }) => {
-  const jslonld = `{
-    "@context": "http://schema.org",
-    "@type": "Organization",
-    "url": "${url}",
-    "logo": "${logo}"
-  }`;
+  const value = {
+    '@context': 'http://schema.org',
+    '@type': 'Organization',
+    url,
+    logo,
+  };
 
-  return (
-    <Head>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={markup(jslonld)}
-        key="jsonld-logo"
-      />
-    </Head>
-  );
+  return <JsonLd keyProp="jsonld-logo" value={value} />;
 };
 
 export default LogoJsonLd;

@@ -1,7 +1,6 @@
 import React, { FC } from 'react';
-import Head from 'next/head';
 
-import markup from '../utils/markup';
+import JsonLd from './JsonLd';
 
 export interface SocialProfileJsonLdProps {
   type: string;
@@ -16,25 +15,15 @@ const SocialProfileJsonLd: FC<SocialProfileJsonLdProps> = ({
   url,
   sameAs = [],
 }) => {
-  const jslonld = `{
-    "@context": "http://schema.org",
-    "@type": "${type}",
-    "name": "${name}",
-    "url": "${url}",
-    "sameAs": [
-      ${sameAs.map(socialUrl => `"${socialUrl}"`)}
-     ]
-  }`;
+  const value = {
+    '@context': 'http://schema.org',
+    '@type': type,
+    name,
+    url,
+    sameAs,
+  };
 
-  return (
-    <Head>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={markup(jslonld)}
-        key="jsonld-social"
-      />
-    </Head>
-  );
+  return <JsonLd keyProp="jsonld-social" value={value} />;
 };
 
 export default SocialProfileJsonLd;

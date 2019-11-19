@@ -1,13 +1,13 @@
 import React, { FC } from 'react';
-import Head from 'next/head';
 
-import markup from '../utils/markup';
+import JsonLd from './JsonLd';
 
 export interface ItemListElements {
   item: string;
   name: string;
   position: number;
 }
+
 export interface BreadCrumbJsonLdProps {
   itemListElements: ItemListElements[];
 }
@@ -15,32 +15,16 @@ export interface BreadCrumbJsonLdProps {
 const BreadCrumbJsonLd: FC<BreadCrumbJsonLdProps> = ({
   itemListElements = [],
 }) => {
-  const jslonld = `{
-    "@context": "http://schema.org",
-    "@type": "BreadcrumbList",
-    "itemListElement": [
-      ${itemListElements.map(
-        itemListElement => `{
-        "@type": "ListItem",
-        "position": ${itemListElement.position},
-        "item": {
-          "@id": "${itemListElement.item}",
-          "name": "${itemListElement.name}"
-        }
-      }`,
-      )}
-     ]
-  }`;
-
-  return (
-    <Head>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={markup(jslonld)}
-        key="jsonld-breadcrumb"
-      />
-    </Head>
-  );
+  const value = {
+    '@context': 'http://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: itemListElements.map(({ position, item, name }) => ({
+      '@type': 'ListItem',
+      position,
+      item: { '@id': item, name },
+    })),
+  };
+  return <JsonLd keyProp="jsonld-breadcrumb" value={value} />;
 };
 
 export default BreadCrumbJsonLd;
