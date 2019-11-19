@@ -1,6 +1,7 @@
 node_modules
 *.log
 .next
+.DS_Store
 .history
 dist
 cypress/videos
