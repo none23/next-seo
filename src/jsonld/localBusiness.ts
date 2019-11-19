@@ -1,6 +1,4 @@
-import React, { FC } from 'react';
-
-import JsonLd from './JsonLd';
+import createJsonLd from '../utils/createJsonld';
 
 type Address = {
   streetAddress: string;
@@ -61,7 +59,7 @@ const buildRating = ({ ratingValue, ratingCount }: Rating) => ({
   ratingCount,
 });
 
-const LocalBusinessJsonLd: FC<LocalBusinessJsonLdProps> = ({
+const buildLocalBusinessJsonLd = ({
   type,
   id,
   name,
@@ -73,24 +71,21 @@ const LocalBusinessJsonLd: FC<LocalBusinessJsonLdProps> = ({
   images,
   rating,
   priceRange,
-}) => {
-  const value = {
-    '@context': 'http://schema.org',
-    '@type': type,
-    '@id': id,
-    description,
-    url,
-    telephone,
+}: LocalBusinessJsonLdProps) => ({
+  '@context': 'http://schema.org',
+  '@type': type,
+  '@id': id,
+  description,
+  url,
+  telephone,
+  address: address ? buildAddress(address) : undefined,
+  geo: geo ? buildGeo(geo) : undefined,
+  aggregateRating: rating ? buildRating(rating) : undefined,
+  priceRange,
+  image: images,
+  name,
+});
 
-    address: address ? buildAddress(address) : undefined,
-    geo: geo ? buildGeo(geo) : undefined,
-    aggregateRating: rating ? buildRating(rating) : undefined,
-    priceRange,
-    image: images,
-    name,
-  };
-
-  return <JsonLd keyProp="jsonld-local-business" value={value} />;
-};
-
-export default LocalBusinessJsonLd;
+const generateKey = ({ id }: LocalBusinessJsonLdProps) =>
+  `jsonld-local-business-${id}`;
+export default createJsonLd(generateKey, buildLocalBusinessJsonLd);

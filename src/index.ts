@@ -21,5 +21,4 @@ export {
   default as CorporateContactJsonLd,
   CorporateContactJsonLdProps,
 } from './jsonld/corporateContact';
-
 export { DefaultSeoProps, NextSeoProps } from './types';

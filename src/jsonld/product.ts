@@ -1,6 +1,4 @@
-import React, { FC } from 'react';
-
-import JsonLd from './JsonLd';
+import createJsonLd from '../utils/createJsonld';
 
 type ReviewRating = {
   bestRating?: string;
@@ -103,7 +101,7 @@ const buildOffers = ({
   price,
 });
 
-const ProductJsonLd: FC<ProductJsonLdProps> = ({
+const buildProductJsonLd = ({
   productName,
   images = [],
   description,
@@ -116,26 +114,23 @@ const ProductJsonLd: FC<ProductJsonLdProps> = ({
   reviews = [],
   aggregateRating,
   offers,
-}) => {
-  const value = {
-    '@context': 'http://schema.org/',
-    '@type': 'Product',
-    image: images,
-    description,
-    mpn,
-    sku,
-    gtin8,
-    gtin13,
-    gtin14,
-    brand: brand ? buildBrand(brand) : undefined,
-    review: reviews.length ? reviews.map(buildReview) : undefined,
-    aggregateRating: aggregateRating
-      ? buildAggregateRating(aggregateRating)
-      : undefined,
-    offers: buildOffers(offers),
-    name: productName,
-  };
-  return <JsonLd keyProp="jsonld-product" value={value} />;
-};
+}: ProductJsonLdProps) => ({
+  '@context': 'http://schema.org/',
+  '@type': 'Product',
+  image: images,
+  description,
+  mpn,
+  sku,
+  gtin8,
+  gtin13,
+  gtin14,
+  brand: brand ? buildBrand(brand) : undefined,
+  review: reviews.length ? reviews.map(buildReview) : undefined,
+  aggregateRating: aggregateRating
+    ? buildAggregateRating(aggregateRating)
+    : undefined,
+  offers: buildOffers(offers),
+  name: productName,
+});
 
-export default ProductJsonLd;
+export default createJsonLd('jsonld-product', buildProductJsonLd);
