@@ -9,7 +9,7 @@ import {
   ProductJsonLd,
   SocialProfileJsonLd,
   CorporateContactJsonLd,
-} from '../../lib';
+} from 'next-seo';
 import Links from '../components/links';
 
 export default () => (

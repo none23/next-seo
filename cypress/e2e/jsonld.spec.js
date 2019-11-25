@@ -1,35 +1,24 @@
 import { assertSchema } from '@cypress/schema-tools';
 import schemas from '../schemas';
 
-const expectedJSONResults = 9;
-
-const articleLdJsonIndex = 0;
-const breadcrumbLdJsonIndex = 1;
-const blogLdJsonIndex = 2;
-const courseLdJsonIndex = 3;
-const localBusinessLdJsonIndex = 4;
-const logoLdJsonIndex = 5;
-const productLdJsonIndex = 6;
-const socialProfileLdJsonIndex = 7;
-const corporateContactIndex = 8;
-
-describe('Validates JSON-LD For:', () => {
-  it('Article', () => {
-    cy.visit('http://localhost:3000/jsonld');
-    cy.get('head script[type="application/ld+json"]')
-      .should('have.length', expectedJSONResults)
-      .then(tags => {
-        const jsonLD = JSON.parse(tags[articleLdJsonIndex].innerHTML);
+describe('Article', () => {
+  it('Injects a script tag with type="application/ld+json", that contains JSON-LD', () => {
+    cy.visit('http://localhost:3000/article');
+    cy.get('script[type="application/ld+json"]')
+      .should('have.length', 1)
+      .first()
+      .root(tag => {
+        const jsonLD = JSON.parse(tag.innerHTML);
         assertSchema(schemas)('Article', '1.0.0')(jsonLD);
       });
   });
 
-  it('Article Matches', () => {
-    cy.visit('http://localhost:3000/jsonld');
-    cy.get('head script[type="application/ld+json"]')
-      .should('have.length', expectedJSONResults)
-      .then(tags => {
-        const jsonLD = JSON.parse(tags[articleLdJsonIndex].innerHTML);
+  it('Injected JSON-LD matches expected schema', () => {
+    cy.visit('http://localhost:3000/article');
+    cy.get('script[type="application/ld+json"]')
+      .first()
+      .root(tag => {
+        const jsonLD = JSON.parse(tag.innerHTML);
         expect(jsonLD).to.deep.equal({
           '@context': 'http://schema.org',
           '@type': 'Article',
@@ -61,23 +50,26 @@ describe('Validates JSON-LD For:', () => {
         });
       });
   });
+});
 
-  it('Breadcrumb', () => {
-    cy.visit('http://localhost:3000/jsonld');
-    cy.get('head script[type="application/ld+json"]')
-      .should('have.length', expectedJSONResults)
-      .then(tags => {
-        const jsonLD = JSON.parse(tags[breadcrumbLdJsonIndex].innerHTML);
+describe('Breadcrumb', () => {
+  it('Injects a script tag with type="application/ld+json", that contains JSON-LD', () => {
+    cy.visit('http://localhost:3000/breadcrumbs');
+    cy.get('script[type="application/ld+json"]')
+      .should('have.length', 1)
+      .first()
+      .root(tag => {
+        const jsonLD = JSON.parse(tag.innerHTML);
         assertSchema(schemas)('Breadcrumb', '1.0.0')(jsonLD);
       });
   });
 
-  it('Breadcrumb Matches', () => {
-    cy.visit('http://localhost:3000/jsonld');
-    cy.get('head script[type="application/ld+json"]')
-      .should('have.length', expectedJSONResults)
-      .then(tags => {
-        const jsonLD = JSON.parse(tags[breadcrumbLdJsonIndex].innerHTML);
+  it('Injected JSON-LD matches expected schema', () => {
+    cy.visit('http://localhost:3000/breadcrumbs');
+    cy.get('script[type="application/ld+json"]')
+      .first()
+      .root(tag => {
+        const jsonLD = JSON.parse(tag.innerHTML);
         expect(jsonLD).to.deep.equal({
           '@context': 'http://schema.org',
           '@type': 'BreadcrumbList',
@@ -119,23 +111,25 @@ describe('Validates JSON-LD For:', () => {
         });
       });
   });
+});
 
-  it('Blog', () => {
-    cy.visit('http://localhost:3000/jsonld');
-    cy.get('head script[type="application/ld+json"]')
-      .should('have.length', expectedJSONResults)
-      .then(tags => {
-        const jsonLD = JSON.parse(tags[blogLdJsonIndex].innerHTML);
-        assertSchema(schemas)('Blog', '1.0.0')(jsonLD);
-      });
+describe('Blog', () => {
+  it('Injects a script tag with type="application/ld+json", that contains JSON-LD', () => {
+    cy.visit('http://localhost:3000/blog');
+    cy.get('script[type="application/ld+json"]')
+      .should('have.length', 1)
+      .first()
+      .root(tag =>
+        assertSchema(schemas)('Blog', '1.0.0')(JSON.parse(tag.innerText)),
+      );
   });
 
-  it('Blog Matches', () => {
-    cy.visit('http://localhost:3000/jsonld');
-    cy.get('head script[type="application/ld+json"]')
-      .should('have.length', expectedJSONResults)
-      .then(tags => {
-        const jsonLD = JSON.parse(tags[blogLdJsonIndex].innerHTML);
+  it('Injected JSON-LD matches expected schema', () => {
+    cy.visit('http://localhost:3000/blog');
+    cy.get('script[type="application/ld+json"]')
+      .first()
+      .root(tag => {
+        const jsonLD = JSON.parse(tag.innerHTML);
         expect(jsonLD).to.deep.equal({
           '@context': 'http://schema.org',
           '@type': 'Blog',
@@ -159,23 +153,26 @@ describe('Validates JSON-LD For:', () => {
         });
       });
   });
+});
 
-  it('Course', () => {
-    cy.visit('http://localhost:3000/jsonld');
-    cy.get('head script[type="application/ld+json"]')
-      .should('have.length', expectedJSONResults)
-      .then(tags => {
-        const jsonLD = JSON.parse(tags[courseLdJsonIndex].innerHTML);
+describe('Course', () => {
+  it('Injects a script tag with type="application/ld+json", that contains JSON-LD', () => {
+    cy.visit('http://localhost:3000/course');
+    cy.get('script[type="application/ld+json"]')
+      .should('have.length', 1)
+      .first()
+      .root(tag => {
+        const jsonLD = JSON.parse(tag.innerHTML);
         assertSchema(schemas)('Course', '1.0.0')(jsonLD);
       });
   });
 
-  it('Course Matches', () => {
-    cy.visit('http://localhost:3000/jsonld');
-    cy.get('head script[type="application/ld+json"]')
-      .should('have.length', expectedJSONResults)
-      .then(tags => {
-        const jsonLD = JSON.parse(tags[courseLdJsonIndex].innerHTML);
+  it('Injected JSON-LD matches expected schema', () => {
+    cy.visit('http://localhost:3000/course');
+    cy.get('script[type="application/ld+json"]')
+      .first()
+      .root(tag => {
+        const jsonLD = JSON.parse(tag.innerHTML);
         expect(jsonLD).to.deep.equal({
           '@context': 'http://schema.org',
           '@type': 'Course',
@@ -189,23 +186,26 @@ describe('Validates JSON-LD For:', () => {
         });
       });
   });
+});
 
-  it('Local Business', () => {
-    cy.visit('http://localhost:3000/jsonld');
-    cy.get('head script[type="application/ld+json"]')
-      .should('have.length', expectedJSONResults)
-      .then(tags => {
-        const jsonLD = JSON.parse(tags[localBusinessLdJsonIndex].innerHTML);
+describe('Local Business', () => {
+  it('Document contains a script tag with type="application/ld+json", and JSON-LD content', () => {
+    cy.visit('http://localhost:3000/local-business');
+    cy.get('script[type="application/ld+json"]')
+      .should('have.length', 1)
+      .first()
+      .root(tag => {
+        const jsonLD = JSON.parse(tag.innerHTML);
         assertSchema(schemas)('Local Business', '1.0.0')(jsonLD);
       });
   });
 
-  it('Local Business', () => {
-    cy.visit('http://localhost:3000/jsonld');
-    cy.get('head script[type="application/ld+json"]')
-      .should('have.length', expectedJSONResults)
-      .then(tags => {
-        const jsonLD = JSON.parse(tags[localBusinessLdJsonIndex].innerHTML);
+  it('Injected JSON-LD matches expected schema', () => {
+    cy.visit('http://localhost:3000/local-business');
+    cy.get('script[type="application/ld+json"]')
+      .first()
+      .root(tag => {
+        const jsonLD = JSON.parse(tag.innerHTML);
         expect(jsonLD).to.deep.equal({
           '@context': 'http://schema.org',
           '@type': 'Store',
@@ -237,22 +237,39 @@ describe('Validates JSON-LD For:', () => {
       });
   });
 
-  it('Logo', () => {
-    cy.visit('http://localhost:3000/jsonld');
-    cy.get('head script[type="application/ld+json"]')
-      .should('have.length', expectedJSONResults)
-      .then(tags => {
-        const jsonLD = JSON.parse(tags[logoLdJsonIndex].innerHTML);
+  it('If page has multiple stores, document contains a script tag with type="application/ld+json", and JSON-LD content for every store on the page', () => {
+    cy.visit('http://localhost:3000/local-businesses');
+    cy.get('script[type="application/ld+json"]')
+      .should('have.length', 2)
+      .spread((first, second) => {
+        assertSchema(schemas)('Local Business', '1.0.0')(
+          JSON.parse(first.innerHTML),
+        );
+        assertSchema(schemas)('Local Business', '1.0.0')(
+          JSON.parse(second.innerHTML),
+        );
+      });
+  });
+});
+
+describe('Logo', () => {
+  it('Injects a script tag with type="application/ld+json", that contains JSON-LD', () => {
+    cy.visit('http://localhost:3000/logo');
+    cy.get('script[type="application/ld+json"]')
+      .should('have.length', 1)
+      .first()
+      .root(tag => {
+        const jsonLD = JSON.parse(tag.innerHTML);
         assertSchema(schemas)('Logo', '1.0.0')(jsonLD);
       });
   });
 
-  it('Logo Matches', () => {
-    cy.visit('http://localhost:3000/jsonld');
-    cy.get('head script[type="application/ld+json"]')
-      .should('have.length', expectedJSONResults)
-      .then(tags => {
-        const jsonLD = JSON.parse(tags[logoLdJsonIndex].innerHTML);
+  it('Injected JSON-LD matches expected schema', () => {
+    cy.visit('http://localhost:3000/logo');
+    cy.get('script[type="application/ld+json"]')
+      .first()
+      .root(tag => {
+        const jsonLD = JSON.parse(tag.innerHTML);
         expect(jsonLD).to.deep.equal({
           '@context': 'http://schema.org',
           '@type': 'Organization',
@@ -261,23 +278,27 @@ describe('Validates JSON-LD For:', () => {
         });
       });
   });
+});
 
-  it('Product', () => {
-    cy.visit('http://localhost:3000/jsonld');
-    cy.get('head script[type="application/ld+json"]')
-      .should('have.length', expectedJSONResults)
-      .then(tags => {
-        const jsonLD = JSON.parse(tags[productLdJsonIndex].innerHTML);
+describe('Product', () => {
+  it('Injects a script tag with type="application/ld+json", that contains JSON-LD', () => {
+    cy.visit('http://localhost:3000/product');
+    cy.get('script[type="application/ld+json"]')
+      .should('have.length', 1)
+      .first()
+      .root(tag => {
+        const jsonLD = JSON.parse(tag.innerHTML);
         assertSchema(schemas)('Product', '1.0.0')(jsonLD);
       });
   });
 
-  it('Product Matches', () => {
-    cy.visit('http://localhost:3000/jsonld');
-    cy.get('head script[type="application/ld+json"]')
-      .should('have.length', expectedJSONResults)
-      .then(tags => {
-        const jsonLD = JSON.parse(tags[productLdJsonIndex].innerHTML);
+  it('Injected JSON-LD matches expected schema', () => {
+    cy.visit('http://localhost:3000/product');
+    cy.get('script[type="application/ld+json"]')
+      .should('have.length', 1)
+      .first()
+      .root(tag => {
+        const jsonLD = JSON.parse(tag.innerHTML);
         expect(jsonLD).to.deep.equal({
           '@context': 'http://schema.org/',
           '@type': 'Product',
@@ -330,23 +351,51 @@ describe('Validates JSON-LD For:', () => {
         });
       });
   });
+});
 
-  it('Social Profile', () => {
-    cy.visit('http://localhost:3000/jsonld');
-    cy.get('head script[type="application/ld+json"]')
-      .should('have.length', expectedJSONResults)
-      .then(tags => {
-        const jsonLD = JSON.parse(tags[socialProfileLdJsonIndex].innerHTML);
+describe('Social Profile', () => {
+  it('Injects a script tag with type="application/ld+json", that contains JSON-LD', () => {
+    cy.visit('http://localhost:3000/profile');
+    cy.get('script[type="application/ld+json"]')
+      .should('have.length', 1)
+      .first()
+      .root(tag => {
+        const jsonLD = JSON.parse(tag.innerHTML);
         assertSchema(schemas)('Social Profile', '1.0.0')(jsonLD);
       });
   });
 
-  it('Social Profile Matches', () => {
-    cy.visit('http://localhost:3000/jsonld');
-    cy.get('head script[type="application/ld+json"]')
-      .should('have.length', expectedJSONResults)
-      .then(tags => {
-        const jsonLD = JSON.parse(tags[socialProfileLdJsonIndex].innerHTML);
+  it('Injects a script tag with type="application/ld+json", that contains JSON-LD', () => {
+    cy.visit('http://localhost:3000/profile');
+    cy.get('script[type="application/ld+json"]')
+      .should('have.length', 1)
+      .first()
+      .root(tag => {
+        const jsonLD = JSON.parse(tag.innerHTML);
+        assertSchema(schemas)('Social Profile', '1.0.0')(jsonLD);
+      });
+  });
+
+  it('If page has multiple profiles, document contains a script tag with type="application/ld+json", and JSON-LD content for every product on the page', () => {
+    cy.visit('http://localhost:3000/profiles');
+    cy.get('script[type="application/ld+json"]')
+      .should('have.length', 2)
+      .spread((first, second) => {
+        assertSchema(schemas)('Social Profile', '1.0.0')(
+          JSON.parse(first.innerHTML),
+        );
+        assertSchema(schemas)('Social Profile', '1.0.0')(
+          JSON.parse(second.innerHTML),
+        );
+      });
+  });
+
+  it('Injected JSON-LD matches expected schema', () => {
+    cy.visit('http://localhost:3000/profile');
+    cy.get('script[type="application/ld+json"]')
+      .first()
+      .root(tag => {
+        const jsonLD = JSON.parse(tag.innerHTML);
         expect(jsonLD).to.deep.equal({
           '@context': 'http://schema.org',
           '@type': 'Person',
@@ -361,23 +410,26 @@ describe('Validates JSON-LD For:', () => {
         });
       });
   });
+});
 
-  it('CorporateContact', () => {
-    cy.visit('http://localhost:3000/jsonld');
-    cy.get('head script[type="application/ld+json"]')
-      .should('have.length', expectedJSONResults)
-      .then(tags => {
-        const jsonLD = JSON.parse(tags[corporateContactIndex].innerHTML);
+describe('CorporateContact', () => {
+  it('Injects a script tag with type="application/ld+json", that contains JSON-LD', () => {
+    cy.visit('http://localhost:3000/corporate-contact');
+    cy.get('script[type="application/ld+json"]')
+      .should('have.length', 1)
+      .first()
+      .root(tag => {
+        const jsonLD = JSON.parse(tag.innerHTML);
         assertSchema(schemas)('Corporate Contact', '1.0.0')(jsonLD);
       });
   });
 
-  it('Corporate Contact Matches', () => {
-    cy.visit('http://localhost:3000/jsonld');
-    cy.get('head script[type="application/ld+json"]')
-      .should('have.length', expectedJSONResults)
-      .then(tags => {
-        const jsonLD = JSON.parse(tags[corporateContactIndex].innerHTML);
+  it('Injected JSON-LD matches expected schema', () => {
+    cy.visit('http://localhost:3000/corporate-contact');
+    cy.get('script[type="application/ld+json"]')
+      .first()
+      .root(tag => {
+        const jsonLD = JSON.parse(tag.innerHTML);
         expect(jsonLD).to.deep.equal({
           '@context': 'https://schema.org',
           '@type': 'Organization',

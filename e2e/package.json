@@ -1,0 +1,19 @@
+{
+  "name": "e2e",
+  "version": "0.1.0",
+  "description": "Sample project for e2e testing",
+  "scripts": {
+    "build": "next build",
+    "dev": "next dev",
+    "prestart": "next build",
+    "start": "next start"
+  },
+  "author": "none23 <n.anisimov.23@gmail.com> (https://github.com/none23)",
+  "license": "ISP",
+  "dependencies": {
+    "next": "^9.1.4",
+    "react": "^16.12.0",
+    "react-dom": "^16.12.0",
+    "next-seo": "../"
+  }
+}

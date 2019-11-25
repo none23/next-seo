@@ -1,5 +1,5 @@
 import React from 'react';
-import { NextSeo } from '../../lib';
+import { NextSeo, SocialProfileJsonLd } from 'next-seo';
 import Links from '../components/links';
 
 export default () => (
@@ -55,5 +55,16 @@ export default () => (
     />
     <h1>Profile Page SEO</h1>
     <Links />
+    <SocialProfileJsonLd
+      type="Person"
+      url="http://www.your-site.com"
+      name="your name"
+      sameAs={[
+        'http://www.facebook.com/your-profile',
+        'http://instagram.com/yourProfile',
+        'http://www.linkedin.com/in/yourprofile',
+        'http://plus.google.com/your_profile',
+      ]}
+    />
   </>
 );

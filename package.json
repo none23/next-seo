@@ -31,9 +31,9 @@
     "build:watch": "yarn rollup -cw",
     "cy:open": "cypress open",
     "cy:run": "cypress run",
-    "e2e:dev": "yarn next e2e",
-    "e2e:build": "yarn next build e2e",
-    "e2e:start": "yarn next start e2e"
+    "e2e:dev": "(cd e2e && npm install && npm run dev)",
+    "e2e:build": "(cd e2e && npm install && npm run build)",
+    "e2e:start": "(cd e2e && npm run start)"
   },
   "prettier": {
     "singleQuote": true,
